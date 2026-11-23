@@ -1,0 +1,90 @@
+
+============================================================================
+ 01 | EVALUATION OVERVIEW
+============================================================================
+Input telemetry events                                        472
+Ground Truth events                                           472
+Attack events                                                  56
+Engine stories generated                                      183
+Engine campaigns generated                                    105
+Attack scenario                                          CAMP-001
+
+Ground Truth is used by the evaluator as the reference.
+It is not an input to the engine's correlation process.
+
+============================================================================
+ 02 | RELATIONSHIP DETECTION PERFORMANCE
+============================================================================
+True positive relationships                                   674
+False positive relationships                                  181
+Missed expected relationships                                 336
+Precision                                                  78.83%
+  Correct predictions / all predicted relationships
+Recall                                                     66.73%
+  Detected expected relationships / all expected relationships
+Overall F1-score                                           72.28%
+  Harmonic mean of precision and recall
+
+============================================================================
+ CORE ATTACK RELATIONSHIPS
+============================================================================
+Core true positives                                            91
+Core false positives                                           96
+Core false negatives                                           54
+Core precision                                             48.66%
+Core recall                                                62.76%
+Core Pair F1                                               54.82%
+Core miss rate                                             37.24%
+
+============================================================================
+ FALSE CORRELATION BREAKDOWN
+============================================================================
+BENIGN to BENIGN                                               85
+CAMP001 to CAMP001                                             96
+Benign-to-attack false correlation rate                     0.00%
+  0 false links / 187 predicted attack-related links
+
+============================================================================
+ 03 | CAMPAIGN RECONSTRUCTION
+============================================================================
+Attack events captured in largest campaign           56/56 (100.00%)
+  Campaign purity: attack-event coverage
+Largest campaign total events                                 136
+Campaign cleanliness                                       41.18%
+  56 attack events / 136 total events
+Campaigns containing attack events                              1
+Majority attack campaigns                                       1
+Campaign fragmentation                                      False
+
+============================================================================
+ ATTACK STAGE RECONSTRUCTION
+============================================================================
+Correct stage predictions                          30/56 (53.57%)
+Stage prediction coverage                          40/56 (71.43%)
+Conditional stage accuracy                         30/40 (75.00%)
+Missing or ambiguous predictions                               16
+Stage order correct                                          None
+
+============================================================================
+ SEVERITY & BENIGN NOISE
+============================================================================
+Attack campaign severity score                             50.00%
+  1 attack-containing campaign(s)
+Benign traps in HIGH/CRITICAL campaigns                        38
+Detected benign trap events                                   225
+Noise suppression rate                                     24.26%
+  99 suppressed / 416 benign Ground Truth events
+Final severity score                                       45.78%
+
+============================================================================
+ OVERALL EVALUATION
+============================================================================
+Composite score                                            59.68%
+  Weighted score across six evaluable components
+Active-state calibration                            NOT EVALUABLE
+  No active/inactive labels in Ground Truth; excluded from composite
+
+============================================================================
+END OF EVALUATION REPORT
+Full JSON report: /home/kali/attack-correlation-engine/evaluation/evaluation_report.json
+============================================================================

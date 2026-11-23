@@ -1,0 +1,1136 @@
+{
+  "dataset": {
+    "events": 472,
+    "ground_truth_events": 472,
+    "engine_events": 472,
+    "stories": 183,
+    "campaigns": 105
+  },
+  "relationship_metrics": {
+    "overall": {
+      "true_positives": 674,
+      "false_positives": 181,
+      "false_negatives": 336,
+      "precision": 0.7883040935672515,
+      "recall": 0.6673267326732674,
+      "f1": 0.7227882037533512
+    },
+    "core_pairs": {
+      "true_positives": 91,
+      "false_positives": 96,
+      "false_negatives": 54,
+      "precision": 0.48663101604278075,
+      "recall": 0.6275862068965518,
+      "f1": 0.5481927710843373,
+      "core_miss_rate": 0.3724137931034483
+    }
+  },
+  "false_correlations": {
+    "false_pair_counts": {
+      "CAMP001_to_CAMP001": 96,
+      "BENIGN_to_BENIGN": 85
+    },
+    "total_false_pairs": 181,
+    "benign_to_camp001_false_correlation_rate": 0.0,
+    "predicted_pairs_with_attack_endpoint": 187,
+    "rate_denominator": "All predicted pairs with at least one CAMP-001 endpoint, including true-positive pairs"
+  },
+  "campaign_metrics": {
+    "largest_campaign_id": "bebd266e10a62318",
+    "largest_campaign_event_count": 136,
+    "attack_events_in_largest_campaign": 56,
+    "campaign_purity": 1.0,
+    "campaign_cleanliness": 0.4117647058823529,
+    "campaigns_containing_attack_events": 1,
+    "attack_campaign_ids": [
+      "bebd266e10a62318"
+    ],
+    "majority_attack_campaigns": [
+      "bebd266e10a62318"
+    ],
+    "majority_attack_campaign_count": 1,
+    "fragmented": false,
+    "benign_events_in_campaigns": 309,
+    "benign_events_in_stories": 309,
+    "benign_events_suppressed_from_both": 99,
+    "noise_suppression_rate": 0.2426470588235294
+  },
+  "stage_metrics": {
+    "accuracy": 0.5357142857142857,
+    "correct": 30,
+    "evaluated_attack_events": 40,
+    "total_attack_events": 56,
+    "coverage": 0.7142857142857143,
+    "conditional_accuracy_on_evaluable_events": 0.75,
+    "missing_or_ambiguous_predictions": 16,
+    "ambiguous_event_predictions": 0,
+    "story_alignment_failures": 9,
+    "stage_order_correct": null,
+    "stage_order_evaluable": false,
+    "first_predicted_stage_timestamps": {},
+    "note": "Accuracy denominator includes all CAMP-001 events. Missing or ambiguous predictions count as incorrect. Stage order uses event timestamps from the input dataset. Persistence is not mapped to a Ground Truth stage."
+  },
+  "active_state_calibration": {
+    "status": "NOT EVALUABLE",
+    "score": null,
+    "reason": "Ground Truth contains no active/inactive labels. No calibration score is assigned and this metric is excluded from the composite score."
+  },
+  "trap_metrics": {
+    "unique_benign_trap_events": 225,
+    "category_event_counts": {
+      "sysmon_rule_name_registry_activity": 99,
+      "run_key_registry_activity": 37,
+      "private_subnet_network_activity": 25,
+      "create_remote_thread_ctrlroutine": 24,
+      "certutil_activity": 19,
+      "dismhost_temp_activity": 6,
+      "a7a_domain_activity": 39,
+      "fakenet_activity": 25
+    },
+    "category_note": "Categories may overlap; one event can belong to multiple trap categories. Unique trap event count is deduplicated.",
+    "trap_event_ids": [
+      "EVT-00004",
+      "EVT-00005",
+      "EVT-00006",
+      "EVT-00007",
+      "EVT-00008",
+      "EVT-00009",
+      "EVT-00010",
+      "EVT-00011",
+      "EVT-00012",
+      "EVT-00013",
+      "EVT-00014",
+      "EVT-00017",
+      "EVT-00018",
+      "EVT-00019",
+      "EVT-00021",
+      "EVT-00022",
+      "EVT-00023",
+      "EVT-00024",
+      "EVT-00026",
+      "EVT-00027",
+      "EVT-00028",
+      "EVT-00032",
+      "EVT-00033",
+      "EVT-00034",
+      "EVT-00036",
+      "EVT-00037",
+      "EVT-00038",
+      "EVT-00044",
+      "EVT-00045",
+      "EVT-00057",
+      "EVT-00060",
+      "EVT-00061",
+      "EVT-00062",
+      "EVT-00063",
+      "EVT-00064",
+      "EVT-00065",
+      "EVT-00066",
+      "EVT-00067",
+      "EVT-00070",
+      "EVT-00071",
+      "EVT-00072",
+      "EVT-00073",
+      "EVT-00074",
+      "EVT-00075",
+      "EVT-00076",
+      "EVT-00077",
+      "EVT-00078",
+      "EVT-00079",
+      "EVT-00080",
+      "EVT-00081",
+      "EVT-00082",
+      "EVT-00083",
+      "EVT-00086",
+      "EVT-00087",
+      "EVT-00088",
+      "EVT-00089",
+      "EVT-00090",
+      "EVT-00095",
+      "EVT-00096",
+      "EVT-00097",
+      "EVT-00102",
+      "EVT-00103",
+      "EVT-00106",
+      "EVT-00107",
+      "EVT-00111",
+      "EVT-00112",
+      "EVT-00118",
+      "EVT-00124",
+      "EVT-00125",
+      "EVT-00126",
+      "EVT-00127",
+      "EVT-00128",
+      "EVT-00129",
+      "EVT-00130",
+      "EVT-00131",
+      "EVT-00138",
+      "EVT-00139",
+      "EVT-00157",
+      "EVT-00158",
+      "EVT-00159",
+      "EVT-00164",
+      "EVT-00165",
+      "EVT-00166",
+      "EVT-00168",
+      "EVT-00169",
+      "EVT-00173",
+      "EVT-00174",
+      "EVT-00177",
+      "EVT-00178",
+      "EVT-00179",
+      "EVT-00180",
+      "EVT-00181",
+      "EVT-00182",
+      "EVT-00183",
+      "EVT-00185",
+      "EVT-00186",
+      "EVT-00187",
+      "EVT-00188",
+      "EVT-00189",
+      "EVT-00190",
+      "EVT-00196",
+      "EVT-00203",
+      "EVT-00204",
+      "EVT-00206",
+      "EVT-00207",
+      "EVT-00210",
+      "EVT-00211",
+      "EVT-00217",
+      "EVT-00218",
+      "EVT-00219",
+      "EVT-00220",
+      "EVT-00221",
+      "EVT-00222",
+      "EVT-00223",
+      "EVT-00225",
+      "EVT-00226",
+      "EVT-00231",
+      "EVT-00232",
+      "EVT-00233",
+      "EVT-00234",
+      "EVT-00238",
+      "EVT-00240",
+      "EVT-00244",
+      "EVT-00245",
+      "EVT-00247",
+      "EVT-00248",
+      "EVT-00249",
+      "EVT-00250",
+      "EVT-00251",
+      "EVT-00252",
+      "EVT-00253",
+      "EVT-00254",
+      "EVT-00255",
+      "EVT-00256",
+      "EVT-00257",
+      "EVT-00258",
+      "EVT-00259",
+      "EVT-00260",
+      "EVT-00261",
+      "EVT-00262",
+      "EVT-00263",
+      "EVT-00264",
+      "EVT-00265",
+      "EVT-00266",
+      "EVT-00269",
+      "EVT-00270",
+      "EVT-00272",
+      "EVT-00273",
+      "EVT-00274",
+      "EVT-00275",
+      "EVT-00276",
+      "EVT-00277",
+      "EVT-00278",
+      "EVT-00290",
+      "EVT-00291",
+      "EVT-00292",
+      "EVT-00293",
+      "EVT-00294",
+      "EVT-00295",
+      "EVT-00296",
+      "EVT-00297",
+      "EVT-00305",
+      "EVT-00311",
+      "EVT-00312",
+      "EVT-00317",
+      "EVT-00320",
+      "EVT-00321",
+      "EVT-00326",
+      "EVT-00327",
+      "EVT-00328",
+      "EVT-00337",
+      "EVT-00338",
+      "EVT-00342",
+      "EVT-00354",
+      "EVT-00355",
+      "EVT-00356",
+      "EVT-00357",
+      "EVT-00358",
+      "EVT-00359",
+      "EVT-00360",
+      "EVT-00361",
+      "EVT-00362",
+      "EVT-00363",
+      "EVT-00364",
+      "EVT-00366",
+      "EVT-00367",
+      "EVT-00368",
+      "EVT-00369",
+      "EVT-00370",
+      "EVT-00371",
+      "EVT-00372",
+      "EVT-00373",
+      "EVT-00379",
+      "EVT-00380",
+      "EVT-00381",
+      "EVT-00382",
+      "EVT-00383",
+      "EVT-00384",
+      "EVT-00385",
+      "EVT-00386",
+      "EVT-00387",
+      "EVT-00388",
+      "EVT-00389",
+      "EVT-00390",
+      "EVT-00391",
+      "EVT-00392",
+      "EVT-00393",
+      "EVT-00419",
+      "EVT-00420",
+      "EVT-00425",
+      "EVT-00426",
+      "EVT-00436",
+      "EVT-00437",
+      "EVT-00438",
+      "EVT-00439",
+      "EVT-00440",
+      "EVT-00441",
+      "EVT-00442",
+      "EVT-00443",
+      "EVT-00444",
+      "EVT-00445",
+      "EVT-00469",
+      "EVT-00470",
+      "EVT-00471",
+      "EVT-00472"
+    ],
+    "categories_by_event": {
+      "EVT-00004": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00005": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00006": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00007": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00008": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00009": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00010": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00011": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00012": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00013": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00014": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00017": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00018": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00019": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00021": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00022": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00023": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00024": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00026": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00027": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00028": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00032": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00033": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00034": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00036": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00037": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00038": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00044": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00045": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00057": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00060": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00061": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00062": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00063": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00064": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00065": [
+        "certutil_activity"
+      ],
+      "EVT-00066": [
+        "certutil_activity"
+      ],
+      "EVT-00067": [
+        "certutil_activity"
+      ],
+      "EVT-00070": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00071": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00072": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00073": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00074": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00075": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00076": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00077": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00078": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00079": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00080": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00081": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00082": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00083": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00086": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00087": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00088": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00089": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00090": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00095": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00096": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00097": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00102": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00103": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00106": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00107": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00111": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00112": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00118": [
+        "certutil_activity"
+      ],
+      "EVT-00124": [
+        "certutil_activity"
+      ],
+      "EVT-00125": [
+        "certutil_activity"
+      ],
+      "EVT-00126": [
+        "certutil_activity"
+      ],
+      "EVT-00127": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00128": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00129": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00130": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00131": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00138": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00139": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00157": [
+        "dismhost_temp_activity"
+      ],
+      "EVT-00158": [
+        "dismhost_temp_activity"
+      ],
+      "EVT-00159": [
+        "dismhost_temp_activity"
+      ],
+      "EVT-00164": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00165": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00166": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00168": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00169": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00173": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00174": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00177": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00178": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00179": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00180": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00181": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00182": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00183": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00185": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00186": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00187": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00188": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00189": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00190": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00196": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00203": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00204": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00206": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00207": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00210": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00211": [
+        "create_remote_thread_ctrlroutine"
+      ],
+      "EVT-00217": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00218": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00219": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00220": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00221": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00222": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00223": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00225": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00226": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00231": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00232": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00233": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00234": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00238": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00240": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00244": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00245": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00247": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00248": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00249": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00250": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00251": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00252": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00253": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00254": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00255": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00256": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00257": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00258": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00259": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00260": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00261": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00262": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00263": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00264": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00265": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00266": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00269": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00270": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00272": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00273": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00274": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00275": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00276": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00277": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00278": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00290": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00291": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00292": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00293": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00294": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00295": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00296": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00297": [
+        "a7a_domain_activity"
+      ],
+      "EVT-00305": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00311": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00312": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00317": [
+        "private_subnet_network_activity"
+      ],
+      "EVT-00320": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00321": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00326": [
+        "dismhost_temp_activity"
+      ],
+      "EVT-00327": [
+        "dismhost_temp_activity"
+      ],
+      "EVT-00328": [
+        "dismhost_temp_activity"
+      ],
+      "EVT-00337": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00338": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00342": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00354": [
+        "fakenet_activity"
+      ],
+      "EVT-00355": [
+        "fakenet_activity"
+      ],
+      "EVT-00356": [
+        "fakenet_activity"
+      ],
+      "EVT-00357": [
+        "fakenet_activity"
+      ],
+      "EVT-00358": [
+        "fakenet_activity"
+      ],
+      "EVT-00359": [
+        "fakenet_activity"
+      ],
+      "EVT-00360": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00361": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00362": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00363": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00364": [
+        "fakenet_activity"
+      ],
+      "EVT-00366": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00367": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00368": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00369": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00370": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00371": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00372": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00373": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00379": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00380": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00381": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00382": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00383": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00384": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00385": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00386": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00387": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00388": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00389": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00390": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00391": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00392": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00393": [
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00419": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00420": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00425": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00426": [
+        "run_key_registry_activity",
+        "sysmon_rule_name_registry_activity"
+      ],
+      "EVT-00436": [
+        "fakenet_activity"
+      ],
+      "EVT-00437": [
+        "fakenet_activity"
+      ],
+      "EVT-00438": [
+        "fakenet_activity"
+      ],
+      "EVT-00439": [
+        "fakenet_activity"
+      ],
+      "EVT-00440": [
+        "fakenet_activity"
+      ],
+      "EVT-00441": [
+        "fakenet_activity"
+      ],
+      "EVT-00442": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00443": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00444": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00445": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00469": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00470": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00471": [
+        "certutil_activity",
+        "fakenet_activity"
+      ],
+      "EVT-00472": [
+        "certutil_activity",
+        "fakenet_activity"
+      ]
+    }
+  },
+  "severity_metrics": {
+    "attack_campaign_severity_score_before_penalty": 0.5,
+    "attack_campaigns_scored": 1,
+    "attack_campaign_details": [
+      {
+        "campaign_id": "bebd266e10a62318",
+        "severity": "CRITICAL",
+        "attack_event_count": 56,
+        "severity_score": 0.5
+      }
+    ],
+    "benign_trap_events_detected": 225,
+    "benign_trap_events_in_high_or_critical_campaigns": 38,
+    "benign_trap_high_critical_campaign_exposure_rate": 0.1688888888888889,
+    "contamination_penalty": 0.042222222222222223,
+    "final_severity_score": 0.4577777777777778,
+    "exposed_benign_trap_event_ids": [
+      "EVT-00089",
+      "EVT-00090",
+      "EVT-00177",
+      "EVT-00178",
+      "EVT-00179",
+      "EVT-00180",
+      "EVT-00181",
+      "EVT-00182",
+      "EVT-00183",
+      "EVT-00185",
+      "EVT-00186",
+      "EVT-00187",
+      "EVT-00188",
+      "EVT-00189",
+      "EVT-00190",
+      "EVT-00196",
+      "EVT-00206",
+      "EVT-00207",
+      "EVT-00221",
+      "EVT-00222",
+      "EVT-00223",
+      "EVT-00234",
+      "EVT-00244",
+      "EVT-00245",
+      "EVT-00262",
+      "EVT-00263",
+      "EVT-00269",
+      "EVT-00270",
+      "EVT-00273",
+      "EVT-00274",
+      "EVT-00275",
+      "EVT-00276",
+      "EVT-00290",
+      "EVT-00291",
+      "EVT-00292",
+      "EVT-00295",
+      "EVT-00296",
+      "EVT-00305"
+    ],
+    "methodology_note": "Engine severity is available at campaign level in this output. Benign events in HIGH/CRITICAL campaigns are reported as campaign exposure, not as independently classified event severity. Penalty = 0.25 * exposure rate."
+  },
+  "composite_score": {
+    "score": 0.5967557469217047,
+    "available": true,
+    "components": {
+      "core_pair_f1": 0.5481927710843373,
+      "benign_to_camp001_precision_component": 1.0,
+      "campaign_purity_times_cleanliness": 0.4117647058823529,
+      "stage_accuracy": 0.5357142857142857,
+      "severity_score": 0.4577777777777778,
+      "noise_suppression_rate": 0.2426470588235294
+    },
+    "original_weights": {
+      "core_pair_f1": 0.25,
+      "benign_to_camp001_precision_component": 0.2,
+      "campaign_purity_times_cleanliness": 0.15,
+      "stage_accuracy": 0.15,
+      "severity_score": 0.1,
+      "noise_suppression_rate": 0.05
+    },
+    "normalized_weights_excluding_active_state": {
+      "core_pair_f1": 0.2777777777777778,
+      "benign_to_camp001_precision_component": 0.22222222222222224,
+      "campaign_purity_times_cleanliness": 0.16666666666666666,
+      "stage_accuracy": 0.16666666666666666,
+      "severity_score": 0.11111111111111112,
+      "noise_suppression_rate": 0.05555555555555556
+    },
+    "excluded_metrics": {
+      "active_state_calibration": "NOT EVALUABLE: Ground Truth has no active/inactive label"
+    },
+    "formula": "Weighted mean of the six evaluable components, using original weights normalized by their sum (0.90).",
+    "note": "This is a revised composite score. It is not directly comparable to the earlier 0.5128 score because the earlier Evaluator included an unsupported active-state score and used incorrect false-correlation and severity logic."
+  }
+}

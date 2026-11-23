@@ -1,0 +1,42 @@
+========================================================================
+          ATTACK CORRELATION ENGINE - RELATIONSHIP PERFORMANCE
+========================================================================
+
+How accurately does the engine connect related events?
+
+------------------------------------------------------------------------
+OVERALL RELATIONSHIP METRICS
+  Precision:       78.83%
+  Recall:          66.73%
+  F1-score:        72.28%
+
+  True positives:  674
+  False positives: 181
+  False negatives: 336
+
+CORE ATTACK RELATIONSHIPS
+  Core Pair F1:    54.82%
+  Core Precision: 48.66%
+  Core Recall:    62.76%
+  Core Miss Rate: 37.24%
+
+HOW TO READ THESE RESULTS
+  Precision: proportion of predicted links that are correct.
+  Recall: proportion of expected links that were detected.
+  F1: balance between precision and recall.
+  Core Pair F1: F1 calculated only for relationships involving
+  at least one event belonging to the labelled attack.
+  Core Miss Rate: proportion of expected core relationships
+  that the engine failed to detect.
+
+FALSE CORRELATION BREAKDOWN
+  BENIGN_to_BENIGN: 85
+  CAMP001_to_CAMP001: 96
+  Benign-to-attack false correlation rate: 0.00%
+
+INTERPRETATION
+  Overall metrics include all evaluated relationships.
+  Core Pair F1 is especially relevant to attack reconstruction.
+  A low core recall or high core miss rate indicates that
+  some expected attack relationships remain unreconstructed.
+------------------------------------------------------------------------

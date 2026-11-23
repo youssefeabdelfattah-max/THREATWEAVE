@@ -1,0 +1,33 @@
+========================================================================
+            ATTACK CORRELATION ENGINE - EVALUATION OVERVIEW
+========================================================================
+
+What was evaluated and how the results should be interpreted
+
+------------------------------------------------------------------------
+EVALUATION DATA
+  Input events:             472
+  Ground Truth events:      472
+  Attack events:            56
+  Engine stories:           183
+  Engine campaigns:         105
+
+EVALUATION DESIGN
+  The engine processes the telemetry and produces stories,
+  relationships, and campaigns.
+  Ground Truth is used by the separate evaluator as the
+  reference for measuring the engine output.
+
+WHAT IS BEING MEASURED?
+  Relationship detection: whether event links match the
+  expected relationships in Ground Truth.
+  Campaign reconstruction: whether attack activity is
+  grouped together without excessive unrelated activity.
+  Stage reconstruction: whether attack events are assigned
+  to the expected attack stages.
+
+SCOPE LIMITATION
+  This evaluation contains one labelled attack scenario.
+  Results demonstrate performance on this dataset; they do
+  not establish generalization to all malware or attack types.
+------------------------------------------------------------------------

@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Attack Correlation Platform — Analyst View</title>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --panel2: #1e2229; --border: #2a2f3a;
+    --text: #e6e8eb; --muted: #8b93a1; --accent: #4da3ff;
+    --critical: #ff4d4f; --high: #ff9f43; --medium: #ffd43b; --low: #51cf66;
+    --success: #51cf66; --warning: #ffd43b; --danger: #ff4d4f;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; }
+  header { padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  header h1 { font-size: 18px; margin: 0 12px 0 0; white-space: nowrap; }
+  header input { background: var(--panel2); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 6px; width: 230px; }
+  .api-config { display:flex; align-items:center; gap:6px; }
+  .api-config label { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.4px; }
+  main { display: flex; height: calc(100vh - 72px); }
+  #campaign-list, #incident-list { width: 340px; overflow-y: auto; border-right: 1px solid var(--border); }
+  #detail, #incident-detail { flex: 1; overflow-y: auto; padding: 20px 28px; }
+  .view { display:none; width:100%; height:100%; }
+  .view.active { display:flex; }
+  .campaign-card, .incident-card { padding: 14px 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .campaign-card:hover, .incident-card:hover { background: var(--panel2); }
+  .campaign-card.selected, .incident-card.selected { background: var(--panel2); border-left: 3px solid var(--accent); }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-right: 6px; }
+  .sev-CRITICAL { background: var(--critical); color: #fff; }
+  .sev-HIGH { background: var(--high); color: #1a1a1a; }
+  .sev-MEDIUM { background: var(--medium); color: #1a1a1a; }
+  .sev-LOW { background: var(--low); color: #1a1a1a; }
+  .status-NEW { background:#39404d; color:#fff; }
+  .status-TRIAGED { background:#355c8a; color:#fff; }
+  .status-INVESTIGATING { background:#5b4a8a; color:#fff; }
+  .status-CONTAINED { background:#806b22; color:#fff; }
+  .status-RESOLVED { background:#287047; color:#fff; }
+  .status-CLOSED { background:#4b525e; color:#fff; }
+  .priority-P1 { background:var(--critical); color:#fff; }
+  .priority-P2 { background:var(--high); color:#1a1a1a; }
+  .priority-P3 { background:var(--medium); color:#1a1a1a; }
+  .priority-P4 { background:var(--low); color:#102013; }
+  .active-badge { background: var(--critical); color: #fff; padding: 3px 10px; border-radius: 4px; font-weight: 700; letter-spacing: .5px; font-size: 12px; }
+  .campaign-title, .incident-title { font-weight: 600; margin-bottom: 6px; }
+  .campaign-meta, .incident-meta { color: var(--muted); font-size: 12px; line-height:1.5; }
+  section.panel { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 16px; }
+  section.panel h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin: 0 0 12px 0; }
+  .kv { display: grid; grid-template-columns: 180px 1fr; gap: 6px 12px; font-size: 13px; }
+  .kv div.k { color: var(--muted); }
+  details { margin-bottom: 8px; background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; }
+  details summary { cursor: pointer; font-size: 13px; }
+  details[open] summary { margin-bottom: 8px; }
+  .story-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--panel2); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; cursor: pointer; }
+  .story-row:hover { border-color: var(--accent); }
+  .chain { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-family: monospace; font-size: 12px; }
+  .chain .node { background: var(--panel2); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; }
+  .chain .arrow { color: var(--muted); }
+  .event { border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; margin-bottom: 6px; font-size: 12px; }
+  .event .head { display: flex; justify-content: space-between; color: var(--muted); margin-bottom: 6px; gap:10px; }
+  code.copy { background: var(--panel2); padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+  code.copy:hover { outline: 1px solid var(--accent); }
+  .ioc-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .tag { background: var(--panel2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 11px; margin-right: 4px; display:inline-block; }
+  .stage-pill { display: inline-block; background: var(--panel2); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; margin: 2px; font-size: 12px; }
+  .muted { color: var(--muted); }
+  .rel { border-left: 3px solid var(--accent); padding: 6px 10px; margin-bottom: 8px; font-size: 12px; }
+  button.tab { background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 12px; }
+  button.tab.active { color: var(--text); border-color: var(--accent); }
+  button.action { background:var(--panel2); border:1px solid var(--border); color:var(--text); padding:7px 11px; border-radius:6px; cursor:pointer; font-size:12px; }
+  button.action:hover { border-color:var(--accent); }
+  button.primary { border-color:var(--accent); background:rgba(77,163,255,.10); }
+  button.danger { border-color:var(--critical); color:#fff; }
+  select, textarea { background:var(--panel2); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:8px; font:inherit; }
+  select { min-width:180px; }
+  textarea { width:100%; min-height:90px; resize:vertical; }
+  input[type="text"] { background:var(--panel2); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:8px; }
+  .form-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .form-row input[type="text"] { flex:1; min-width:180px; }
+  .toolbar { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .toolbar h2 { margin:0; font-size:15px; }
+  .stats { display:grid; grid-template-columns:repeat(5,minmax(120px,1fr)); gap:10px; margin-bottom:16px; }
+  .stat { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px; }
+  .stat .value { font-size:22px; font-weight:700; margin-top:4px; }
+  .stat .label { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.5px; }
+  .incident-link { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--accent); color:var(--text); background:rgba(77,163,255,.08); border-radius:5px; padding:4px 8px; cursor:pointer; font-size:12px; }
+  .notice { border:1px solid var(--critical); background:rgba(255,77,79,.09); border-radius:7px; padding:12px; margin-bottom:14px; }
+  .notice strong { color:#fff; }
+  .ok { border-color:var(--success); background:rgba(81,207,102,.08); }
+  .warning { border-color:var(--warning); background:rgba(255,212,59,.08); }
+  .error-box { border:1px solid var(--critical); background:rgba(255,77,79,.08); border-radius:7px; padding:12px; margin:10px 0; font-size:12px; }
+  .success-box { border:1px solid var(--success); background:rgba(81,207,102,.08); border-radius:7px; padding:10px 12px; margin:10px 0; font-size:12px; }
+  .response-box { border-left:3px solid var(--warning); padding-left:12px; }
+  .response-box.critical { border-left-color:var(--critical); }
+  .list-wrap { width:100%; }
+  .top-tabs { display:flex; align-items:center; }
+  .nowrap { white-space:nowrap; }
+  @media (max-width: 1000px) {
+    header { align-items:flex-start; }
+    .stats { grid-template-columns:repeat(2,1fr); }
+    #campaign-list, #incident-list { width:280px; }
+    .kv { grid-template-columns:140px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Attack Correlation Platform — Analyst Console</h1>
+
+  <div class="api-config">
+    <label for="api-base">Analyst API Base</label>
+    <input id="api-base" value="http://10.61.157.171:8000" title="Analyst API base URL">
+  </div>
+
+  <div class="api-config">
+    <label for="incident-api-base">Incident API Base</label>
+    <input id="incident-api-base" value="http://10.61.157.171:8001" title="Incident API base URL">
+  </div>
+
+  <div class="top-tabs">
+    <button id="analyst-tab" class="tab active" onclick="showView('analyst')">Analyst View</button>
+    <button id="incident-tab" class="tab" onclick="showView('incidents')">Incidents <span id="incident-nav-badge"></span></button>
+    <button class="tab" onclick="reload()">Refresh Campaigns</button>
+    <button class="tab" onclick="refreshIncidents()">Refresh Incidents</button>
+  </div>
+</header>
+
+<main>
+  <div id="analyst-view" class="view active">
+    <div id="campaign-list">Loading campaigns…</div>
+    <div id="detail"><p class="muted">Select a campaign on the left.</p></div>
+  </div>
+
+  <div id="incident-view" class="view">
+    <div id="incident-list">Loading incidents…</div>
+    <div id="incident-detail"><p class="muted">Select an incident on the left.</p></div>
+  </div>
+</main>
+
+<script>
+/* ============================================================
+   Existing Analyst API integration
+   ============================================================ */
+let API_BASE = document.getElementById('api-base').value.trim().replace(/\/+$/, '');
+let INCIDENT_API_BASE = document.getElementById('incident-api-base').value.trim().replace(/\/+$/, '');
+
+let campaigns = [];
+let selectedCampaignId = null;
+let incidents = [];
+let selectedIncidentId = null;
+
+const INCIDENT_STATUSES = ['NEW', 'TRIAGED', 'INVESTIGATING', 'CONTAINED', 'RESOLVED', 'CLOSED'];
+const SEVERITY_ORDER = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
+const PRIORITY_ORDER = { P1: 4, P2: 3, P3: 2, P4: 1 };
+
+document.getElementById('api-base').addEventListener('change', (e) => {
+  API_BASE = e.target.value.trim().replace(/\/+$/, '');
+  reload();
+});
+
+document.getElementById('incident-api-base').addEventListener('change', (e) => {
+  INCIDENT_API_BASE = e.target.value.trim().replace(/\/+$/, '');
+  refreshIncidents();
+});
+
+async function api(path) {
+  const res = await fetch(API_BASE + path);
+  if (!res.ok) throw new Error(`${path} -> ${res.status}`);
+  return res.json();
+}
+
+async function incidentApi(path, options = {}) {
+  const res = await fetch(INCIDENT_API_BASE + path, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    }
+  });
+
+  if (!res.ok) {
+    let detail = '';
+    try {
+      const body = await res.json();
+      detail = body.detail || body.message || body.error || JSON.stringify(body);
+    } catch (_) {
+      try { detail = await res.text(); } catch (_) {}
+    }
+
+    const err = new Error(detail || `HTTP ${res.status}`);
+    err.status = res.status;
+    err.path = path;
+    throw err;
+  }
+
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+function copyText(value) {
+  navigator.clipboard.writeText(value);
+}
+
+function sevBadge(sev) {
+  const s = String(sev || 'UNKNOWN').toUpperCase();
+  return `<span class="badge sev-${s}">${escapeHtml(s)}</span>`;
+}
+
+function statusBadge(status) {
+  const s = String(status || 'UNKNOWN').toUpperCase();
+  return `<span class="badge status-${s}">${escapeHtml(s)}</span>`;
+}
+
+function priorityBadge(priority) {
+  const p = String(priority || '').toUpperCase();
+  return p ? `<span class="badge priority-${p}">${escapeHtml(p)}</span>` : '—';
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function arrayValue(v) {
+  return Array.isArray(v) ? v : (v == null ? [] : [v]);
+}
+
+function formatDate(value) {
+  if (!value) return '—';
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? escapeHtml(value) : d.toLocaleString();
+}
+
+function showView(view) {
+  const analyst = view === 'analyst';
+  document.getElementById('analyst-view').classList.toggle('active', analyst);
+  document.getElementById('incident-view').classList.toggle('active', !analyst);
+  document.getElementById('analyst-tab').classList.toggle('active', analyst);
+  document.getElementById('incident-tab').classList.toggle('active', !analyst);
+
+  if (!analyst && !incidents.length) refreshIncidents();
+}
+
+async function reload() {
+  const list = document.getElementById('campaign-list');
+  list.textContent = 'Loading campaigns…';
+
+  try {
+    campaigns = await api('/campaigns');
+  } catch (e) {
+    list.innerHTML = `<div class="error-box">Analyst API unavailable.<br>Could not reach <b>${escapeHtml(API_BASE)}</b>.<br>${escapeHtml(e.message)}</div>`;
+    return;
+  }
+
+  list.innerHTML = campaigns.map(c => `
+    <div class="campaign-card" onclick="selectCampaign('${escapeHtml(c.campaign_id)}')">
+      <div class="campaign-title">
+        ${sevBadge(c.severity)} ${c.active_attack ? '<span class="active-badge">ACTIVE</span>' : ''}
+      </div>
+      <div>Campaign #${escapeHtml(c.campaign_number)} · Risk ${escapeHtml(c.risk_score)} · Conf ${escapeHtml(c.confidence)}%</div>
+      <div class="campaign-meta">${escapeHtml((c.affected_hosts||[]).join(', '))} · ${escapeHtml(c.story_count)} stories · ${escapeHtml((c.mitre_techniques||[]).join(', '))}</div>
+    </div>
+  `).join('') || '<p class="muted" style="padding:16px">No campaigns returned by the Analyst API.</p>';
+
+  if (campaigns.length) {
+    selectCampaign(campaigns[0].campaign_id);
+  } else {
+    document.getElementById('detail').innerHTML = '<p class="muted">No campaigns available.</p>';
+  }
+}
+
+async function selectCampaign(id) {
+  selectedCampaignId = id;
+  document.querySelectorAll('.campaign-card').forEach(el => el.classList.remove('selected'));
+  const idx = campaigns.findIndex(c => c.campaign_id === id);
+  if (idx >= 0 && document.querySelectorAll('.campaign-card')[idx]) {
+    document.querySelectorAll('.campaign-card')[idx].classList.add('selected');
+  }
+
+  const detail = document.getElementById('detail');
+  detail.innerHTML = 'Loading…';
+
+  try {
+    const campaign = await api(`/campaigns/${encodeURIComponent(id)}`);
+    let activeView = null, responseView = null;
+    try { activeView = await api(`/campaigns/${encodeURIComponent(id)}/active`); } catch (e) {}
+    responseView = await api(`/campaigns/${encodeURIComponent(id)}/response`);
+    const iocs = await api('/iocs');
+
+    detail.innerHTML = `
+      ${await renderCampaignIncidentLink(campaign)}
+      ${renderSummary(campaign, activeView)}
+      ${renderProgression(campaign.progression)}
+      ${renderRelationships(campaign.relationships)}
+      ${renderResponse(responseView)}
+      ${renderStories(campaign.stories || [])}
+      ${renderIocs(iocs)}
+    `;
+
+    (campaign.stories || []).forEach(s => {
+      const el = document.getElementById('story-row-' + s.story_id);
+      if (el) el.onclick = () => toggleStory(s.story_id);
+    });
+  } catch (e) {
+    detail.innerHTML = `<div class="error-box">Analyst API error while loading campaign.<br>${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function renderSummary(c, active) {
+  return `
+    <section class="panel">
+      <h2>Summary</h2>
+      ${c.active_attack ? `<p><span class="active-badge">ACTIVE ATTACK</span>
+        &nbsp; active score ${active ? escapeHtml(active.active_score) : escapeHtml(c.active_score)}/100,
+        latest activity: ${active ? escapeHtml(active.latest_activity || 'n/a') : 'n/a'}</p>` : ''}
+      <div class="kv">
+        <div class="k">Campaign ID</div><div>${escapeHtml(c.campaign_id)}</div>
+        <div class="k">Severity</div><div>${sevBadge(c.severity)}</div>
+        <div class="k">Risk / Confidence</div><div>${escapeHtml(c.risk_score)}/100 &nbsp;·&nbsp; ${escapeHtml(c.confidence)}%</div>
+        <div class="k">Attack state</div><div>${escapeHtml(c.attack_state)}</div>
+        <div class="k">Affected hosts</div><div>${escapeHtml((c.affected_hosts||[]).join(', ') || '—')}</div>
+        <div class="k">Affected users</div><div>${escapeHtml((c.affected_users||[]).join(', ') || '—')}</div>
+        <div class="k">MITRE techniques</div><div>${(c.mitre_techniques||[]).map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join(' ') || '—'}</div>
+        <div class="k">Stories</div><div>${escapeHtml(c.story_count)} (${escapeHtml(c.orphan_story_count)} orphan)</div>
+      </div>
+      ${(c.reasons||[]).length ? `<details><summary>Why was this correlated? (${c.reasons.length} reasons)</summary>
+        <ul>${c.reasons.map(r=>`<li>${escapeHtml(r)}</li>`).join('')}</ul></details>` : ''}
+    </section>`;
+}
+
+function renderProgression(p) {
+  if (!p) return '';
+  return `
+    <section class="panel">
+      <h2>Attack Progression — score ${escapeHtml(p.score)}/100</h2>
+      <div>${(p.stage_summary||[]).map(s => `<span class="stage-pill">${escapeHtml(s.stage)} ${s.count > 1 ? '× ' + escapeHtml(s.count) : ''}</span> →`).join(' ').replace(/→\s*$/, '')}</div>
+      ${(p.reasons||[]).length ? `<details style="margin-top:10px"><summary>Progression reasons</summary>
+        <ul>${p.reasons.map(r=>`<li>${escapeHtml(r)}</li>`).join('')}</ul></details>` : ''}
+    </section>`;
+}
+
+function renderRelationships(rels) {
+  if (!rels || !rels.length) return '';
+  return `
+    <section class="panel">
+      <h2>Campaign Relationships (why stories were linked)</h2>
+      ${rels.map(r => `
+        <div class="rel">
+          <div><b>${escapeHtml(r.from)}</b> → <b>${escapeHtml(r.to)}</b> &nbsp; score ${escapeHtml(r.score)}</div>
+          <div class="muted">${escapeHtml((r.reasons||[]).join(', '))}</div>
+          <div>${(r.evidence||[]).map(e=>`<span class="tag">${escapeHtml(e.type)}: ${escapeHtml(e.weight)}</span>`).join(' ')}</div>
+        </div>`).join('')}
+    </section>`;
+}
+
+function renderResponse(r) {
+  return `
+    <section class="panel">
+      <h2>Response (advisory / simulation only — no action is executed)</h2>
+      <div class="response-box ${String(r.response_urgency||'').toUpperCase()==='CRITICAL'?'critical':''}">
+        <div class="kv">
+          <div class="k">Urgency</div><div>${escapeHtml(r.response_urgency)}</div>
+          <div class="k">Action</div><div>${escapeHtml(r.action)}</div>
+          <div class="k">Approval required</div><div>${r.approval_required ? 'Yes' : 'No'}</div>
+          <div class="k">Simulation only</div><div>${r.simulation_only ? 'Yes' : 'No'}</div>
+          ${r.recommended_containment ? `<div class="k">Recommended containment</div><div>${escapeHtml(r.recommended_containment)}</div>` : ''}
+        </div>
+        <ul>${(r.recommendations||[]).map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul>
+      </div>
+    </section>`;
+}
+
+function renderStories(stories) {
+  return `
+    <section class="panel">
+      <h2>Stories (${stories.length})</h2>
+      ${stories.map(s => `
+        <div class="story-row" id="story-row-${escapeHtml(s.story_id)}">
+          <div>
+            ${sevBadge(s.severity)} Story #${escapeHtml(s.story_number)} ${s.orphan ? '<span class="tag">orphan</span>' : ''}
+            &nbsp; ${escapeHtml(s.event_count)} events &nbsp; risk ${escapeHtml(s.risk_score)} / conf ${escapeHtml(s.confidence)}%
+          </div>
+          <div class="muted">expand ▾</div>
+        </div>
+        <div id="story-detail-${escapeHtml(s.story_id)}"></div>
+      `).join('')}
+    </section>`;
+}
+
+async function toggleStory(storyId) {
+  const container = document.getElementById('story-detail-' + storyId);
+  if (container.innerHTML) { container.innerHTML = ''; return; }
+
+  container.innerHTML = '<p class="muted">Loading story…</p>';
+  try {
+    const story = await api(`/stories/${encodeURIComponent(storyId)}`);
+
+    container.innerHTML = `
+      <div class="panel" style="margin:8px 0 16px 0">
+        ${story.process_chain.length ? `
+          <h2>Process Chain</h2>
+          <div class="chain">
+            ${story.process_chain.map((p,i) => `${i>0?'<span class="arrow">→</span>':''}<span class="node">${escapeHtml(p.name||'?')}${p.pid?' (pid '+escapeHtml(p.pid)+')':''}</span>`).join('')}
+          </div>` : ''}
+
+        <h2 style="margin-top:16px">IOCs</h2>
+        <div>
+          ${Object.entries(story.iocs||{}).flatMap(([type, values]) => values.map(v =>
+            `<div class="ioc-row"><span><span class="tag">${escapeHtml(type)}</span> ${escapeHtml(v)}</span>
+              <code class="copy" onclick="copyText('${escapeHtml(v)}')">copy</code></div>`
+          )).join('') || '<p class="muted">No IOCs in this story.</p>'}
+        </div>
+
+        <h2 style="margin-top:16px">MITRE ATT&amp;CK</h2>
+        <div>${(story.mitre_techniques||[]).map(m => `<span class="tag">${escapeHtml(m.technique)}${m.name?' — '+escapeHtml(m.name):''}</span>`).join(' ') || '<span class="muted">None</span>'}</div>
+
+        <h2 style="margin-top:16px">Events (${story.events.length})</h2>
+        ${story.events.map(renderEvent).join('')}
+      </div>
+    `;
+  } catch (e) {
+    container.innerHTML = `<div class="error-box">Analyst API error while loading story.<br>${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function renderEvent(e) {
+  const rows = [];
+  if (e.process) rows.push(`process: ${escapeHtml(e.process.name || '')} ${e.process.command_line ? '<br><span class="muted">'+escapeHtml(e.process.command_line)+'</span>' : ''}`);
+  if (e.parent_process) rows.push(`parent: ${escapeHtml(e.parent_process.name || '')}`);
+  if (e.network) rows.push(`network: ${escapeHtml(e.network.source_ip||'?')} → ${escapeHtml(e.network.destination_ip||'?')}${e.network.destination_port?':'+escapeHtml(e.network.destination_port):''}`);
+  if (e.dns) rows.push(`dns: ${escapeHtml(e.dns.query)}`);
+  if (e.file) rows.push(`file: ${escapeHtml(e.file.path || e.file.name || '')} ${e.file.sha256 ? '<code class="copy" onclick="copyText(\''+escapeHtml(e.file.sha256)+'\')">'+escapeHtml(e.file.sha256.slice(0,16))+'… copy</code>' : ''}`);
+  if (e.registry) rows.push(`registry: ${escapeHtml(e.registry.path)}`);
+  if (e.correlation) rows.push(`<span class="muted">correlated because: ${escapeHtml((e.correlation.reasons||[]).join(', '))}</span>`);
+
+  return `
+    <div class="event">
+      <div class="head"><span>${escapeHtml(e.timestamp || '')} · ${escapeHtml(e.event_name || 'EID ' + e.event_code)}</span><span>${escapeHtml(e.host || '')} / ${escapeHtml(e.user || '')}</span></div>
+      ${rows.map(r => `<div>${r}</div>`).join('')}
+    </div>`;
+}
+
+function renderIocs(iocs) {
+  const total = Object.values(iocs).reduce((a,b) => a + b.length, 0);
+  if (!total) return '';
+  return `
+    <section class="panel">
+      <h2>All Campaign IOCs</h2>
+      ${Object.entries(iocs).map(([type, values]) => values.length ? `
+        <details>
+          <summary>${escapeHtml(type)} (${values.length})</summary>
+          ${values.map(v => `<div class="ioc-row"><span>${escapeHtml(v.value)}</span>
+            <code class="copy" onclick="copyText('${escapeHtml(v.value)}')">copy</code></div>`).join('')}
+        </details>` : '').join('')}
+    </section>`;
+}
+
+/* ============================================================
+   Campaign -> Incident linkage
+   ============================================================ */
+async function getIncidentsForCampaign(campaignId) {
+  try {
+    const data = await incidentApi('/incidents');
+    const list = normalizeIncidents(data);
+    return list.filter(i => String(i.campaign_id || '') === String(campaignId));
+  } catch (e) {
+    return null;
+  }
+}
+
+async function renderCampaignIncidentLink(campaign) {
+  const linked = await getIncidentsForCampaign(campaign.campaign_id);
+
+  if (linked === null) {
+    return `
+      <section class="panel">
+        <h2>Incident Handling</h2>
+        <div class="error-box">Incident API unavailable. Could not resolve campaign → incident linkage from <b>${escapeHtml(INCIDENT_API_BASE)}</b>.</div>
+      </section>`;
+  }
+
+  if (!linked.length) {
+    return `
+      <section class="panel">
+        <h2>Incident Handling</h2>
+        <div class="muted">No incident linked to campaign <code class="copy">${escapeHtml(campaign.campaign_id)}</code>.</div>
+      </section>`;
+  }
+
+  return `
+    <section class="panel">
+      <h2>Incident Handling</h2>
+      ${linked.map(i => `
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="incident-link" onclick="openIncident('${escapeHtml(i.incident_id)}')">
+            Incident: ${escapeHtml(i.incident_id)}
+          </span>
+          ${statusBadge(i.status)}
+          ${priorityBadge(i.priority)}
+          ${sevBadge(i.severity)}
+          <span>Risk ${escapeHtml(i.risk_score ?? '—')}</span>
+          <button class="action primary" onclick="openIncident('${escapeHtml(i.incident_id)}')">Open Incident</button>
+        </div>
+      `).join('')}
+    </section>`;
+}
+
+/* ============================================================
+   Incident Handling
+   ============================================================ */
+function normalizeIncidents(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.incidents)) return data.incidents;
+  if (Array.isArray(data.items)) return data.items;
+  return [];
+}
+
+function incidentPriorityValue(i) {
+  const p = String(i.priority || '').toUpperCase();
+  return PRIORITY_ORDER[p] || 0;
+}
+
+function incidentSeverityValue(i) {
+  const s = String(i.severity || '').toUpperCase();
+  return SEVERITY_ORDER[s] || 0;
+}
+
+function incidentRiskValue(i) {
+  const n = Number(i.risk_score);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function incidentUpdatedValue(i) {
+  const t = new Date(i.updated_at || i.created_at || 0).getTime();
+  return Number.isFinite(t) ? t : 0;
+}
+
+function sortIncidents(list) {
+  return [...list].sort((a,b) =>
+    incidentPriorityValue(b) - incidentPriorityValue(a) ||
+    incidentSeverityValue(b) - incidentSeverityValue(a) ||
+    incidentRiskValue(b) - incidentRiskValue(a) ||
+    incidentUpdatedValue(b) - incidentUpdatedValue(a)
+  );
+}
+
+async function refreshIncidents() {
+  const list = document.getElementById('incident-list');
+  list.innerHTML = '<p class="muted" style="padding:16px">Loading incidents…</p>';
+
+  try {
+    const data = await incidentApi('/incidents');
+    incidents = sortIncidents(normalizeIncidents(data));
+    renderIncidentList();
+    updateIncidentStats();
+
+    if (selectedIncidentId && incidents.some(i => i.incident_id === selectedIncidentId)) {
+      await selectIncident(selectedIncidentId);
+    } else if (incidents.length && document.getElementById('incident-view').classList.contains('active')) {
+      await selectIncident(incidents[0].incident_id);
+    }
+  } catch (e) {
+    incidents = [];
+    list.innerHTML = `
+      <div class="error-box">
+        <b>Incident API unavailable</b><br>
+        Could not reach <b>${escapeHtml(INCIDENT_API_BASE)}</b>.<br>
+        ${escapeHtml(e.message)}
+      </div>`;
+    updateIncidentStats();
+  }
+}
+
+function renderIncidentList() {
+  const list = document.getElementById('incident-list');
+
+  if (!incidents.length) {
+    list.innerHTML = '<p class="muted" style="padding:16px">No real incidents returned by the Incident API.</p>';
+    document.getElementById('incident-detail').innerHTML = '<p class="muted">No incidents available.</p>';
+    return;
+  }
+
+  list.innerHTML = incidents.map(i => `
+    <div class="incident-card ${i.incident_id === selectedIncidentId ? 'selected' : ''}"
+         onclick="selectIncident('${escapeHtml(i.incident_id)}')">
+      <div class="incident-title">${statusBadge(i.status)} ${sevBadge(i.severity)} ${priorityBadge(i.priority)}</div>
+      <div>${escapeHtml(i.title || i.incident_id)}</div>
+      <div class="incident-meta">
+        Risk ${escapeHtml(i.risk_score ?? '—')} · Conf ${escapeHtml(i.confidence ?? '—')}%
+        · ${escapeHtml(i.event_count ?? '—')} events · ${escapeHtml(i.stories ?? i.story_count ?? '—')} stories
+      </div>
+      <div class="incident-meta">${escapeHtml(arrayValue(i.hosts).join(', ') || 'No host')} · updated ${formatDate(i.updated_at)}</div>
+    </div>
+  `).join('');
+}
+
+function updateIncidentStats() {
+  const totalOpen = incidents.filter(i => !['RESOLVED','CLOSED'].includes(String(i.status||'').toUpperCase())).length;
+  const critical = incidents.filter(i => String(i.severity||'').toUpperCase() === 'CRITICAL').length;
+  const high = incidents.filter(i => String(i.severity||'').toUpperCase() === 'HIGH').length;
+  const active = incidents.filter(i =>
+    i.source_campaign_active_attack === true ||
+    String(i.source_campaign_attack_state || '').toUpperCase() === 'ACTIVE_ATTACK'
+  ).length;
+  const p1 = incidents.filter(i => String(i.priority||'').toUpperCase() === 'P1').length;
+
+  const values = { open:totalOpen, critical, high, active, p1 };
+  Object.entries(values).forEach(([key,value]) => {
+    const el = document.getElementById('stat-' + key);
+    if (el) el.textContent = value;
+  });
+
+  const badge = document.getElementById('incident-nav-badge');
+  if (badge) badge.textContent = totalOpen ? `(${totalOpen})` : '';
+}
+
+function incidentStatsHtml() {
+  return `
+    <div class="stats">
+      <div class="stat"><div class="label">Total Open Incidents</div><div class="value" id="stat-open">0</div></div>
+      <div class="stat"><div class="label">Critical Incidents</div><div class="value" id="stat-critical">0</div></div>
+      <div class="stat"><div class="label">High Incidents</div><div class="value" id="stat-high">0</div></div>
+      <div class="stat"><div class="label">Active Attack Incidents</div><div class="value" id="stat-active">0</div></div>
+      <div class="stat"><div class="label">P1 Incidents</div><div class="value" id="stat-p1">0</div></div>
+    </div>`;
+}
+
+async function selectIncident(id) {
+  selectedIncidentId = id;
+  document.querySelectorAll('.incident-card').forEach(el => el.classList.remove('selected'));
+
+  const idx = incidents.findIndex(i => i.incident_id === id);
+  if (idx >= 0 && document.querySelectorAll('.incident-card')[idx]) {
+    document.querySelectorAll('.incident-card')[idx].classList.add('selected');
+  }
+
+  const detail = document.getElementById('incident-detail');
+  detail.innerHTML = '<p class="muted">Loading incident…</p>';
+
+  try {
+    const incident = await incidentApi(`/incidents/${encodeURIComponent(id)}`);
+    let summary = null;
+    try {
+      summary = await incidentApi(`/incidents/${encodeURIComponent(id)}/summary`);
+    } catch (_) {}
+
+    detail.innerHTML = renderIncidentDetail(incident, summary);
+  } catch (e) {
+    const label = e.status === 404 ? 'Incident not found' : 'Incident API error';
+    detail.innerHTML = `<div class="error-box"><b>${label}</b><br>${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function renderIncidentDetail(i, summary) {
+  const activeAttack =
+    i.source_campaign_active_attack === true ||
+    String(i.source_campaign_attack_state || '').toUpperCase() === 'ACTIVE_ATTACK';
+
+  const recommended = i.recommended_response || {};
+  const hosts = arrayValue(i.hosts);
+  const users = arrayValue(i.users);
+  const mitre = arrayValue(i.mitre);
+  const iocCounts = i.ioc_counts || {};
+
+  return `
+    ${activeAttack ? `
+      <div class="notice">
+        <strong>ACTIVE ATTACK</strong><br>
+        INCIDENT REQUIRES ATTENTION
+        ${i.source_campaign_attack_state ? `<div class="muted" style="margin-top:5px">Source campaign state: ${escapeHtml(i.source_campaign_attack_state)}</div>` : ''}
+      </div>` : ''}
+
+    <div class="toolbar">
+      <h2>${escapeHtml(i.title || i.incident_id)}</h2>
+      <div class="form-row">
+        <button class="action" onclick="refreshIncidents()">Refresh Incidents</button>
+        ${i.campaign_id ? `<button class="action" onclick="openCampaign('${escapeHtml(i.campaign_id)}')">Open Campaign</button>` : ''}
+      </div>
+    </div>
+
+    <section class="panel">
+      <h2>Incident Overview</h2>
+      <div class="kv">
+        <div class="k">Incident ID</div><div><code class="copy">${escapeHtml(i.incident_id)}</code></div>
+        <div class="k">Title</div><div>${escapeHtml(i.title || '—')}</div>
+        <div class="k">Status</div><div>${statusBadge(i.status)}</div>
+        <div class="k">Severity</div><div>${sevBadge(i.severity)}</div>
+        <div class="k">Priority</div><div>${priorityBadge(i.priority)}</div>
+        <div class="k">Risk score</div><div>${escapeHtml(i.risk_score ?? '—')}/100</div>
+        <div class="k">Confidence</div><div>${escapeHtml(i.confidence ?? '—')}%</div>
+        <div class="k">Campaign ID</div><div>${i.campaign_id ? `<code class="copy">${escapeHtml(i.campaign_id)}</code>` : '—'}</div>
+        <div class="k">Source attack state</div><div>${escapeHtml(i.source_campaign_attack_state || '—')}</div>
+        <div class="k">Active attack</div><div>${activeAttack ? '<span class="active-badge">ACTIVE ATTACK</span>' : 'No'}</div>
+        <div class="k">Hosts</div><div>${hosts.length ? hosts.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join(' ') : '—'}</div>
+        <div class="k">Users</div><div>${users.length ? users.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join(' ') : '—'}</div>
+        <div class="k">MITRE techniques</div><div>${renderMitre(mitre)}</div>
+        <div class="k">IOC counts</div><div>${renderIocCounts(iocCounts)}</div>
+        <div class="k">Stories</div><div>${escapeHtml(i.stories ?? i.story_count ?? '—')}</div>
+        <div class="k">Events</div><div>${escapeHtml(i.event_count ?? '—')}</div>
+        <div class="k">Created at</div><div>${formatDate(i.created_at)}</div>
+        <div class="k">Updated at</div><div>${formatDate(i.updated_at)}</div>
+      </div>
+    </section>
+
+    ${renderRecommendedResponse(recommended)}
+
+    ${renderIncidentLifecycle(i)}
+
+    ${renderIncidentNotes(i)}
+
+    ${summary ? renderIncidentSummary(summary) : ''}
+  `;
+}
+
+function renderMitre(mitre) {
+  if (!mitre.length) return '—';
+  return mitre.map(m => {
+    if (typeof m === 'string') return `<span class="tag">${escapeHtml(m)}</span>`;
+    const text = m.technique || m.id || m.name || JSON.stringify(m);
+    return `<span class="tag">${escapeHtml(text)}</span>`;
+  }).join(' ');
+}
+
+function renderIocCounts(counts) {
+  const entries = Object.entries(counts);
+  if (!entries.length) return '—';
+  return entries.map(([type,count]) => `<span class="tag">${escapeHtml(type)}: ${escapeHtml(count)}</span>`).join(' ');
+}
+
+function renderRecommendedResponse(r) {
+  const approval = r.approval_required === true;
+  const simulation = r.simulation_only === true;
+  return `
+    <section class="panel">
+      <h2>Recommended Response</h2>
+      <div class="response-box ${String(r.response_urgency||'').toUpperCase()==='CRITICAL'?'critical':''}">
+        <div class="kv">
+          <div class="k">Recommendation</div><div><b>${escapeHtml(r.action || '—')}</b></div>
+          <div class="k">Urgency</div><div>${escapeHtml(r.response_urgency || '—')}</div>
+          <div class="k">Approval required</div><div>${approval ? '<span class="badge sev-HIGH">YES</span>' : 'No'}</div>
+          <div class="k">Simulation-only</div><div>${simulation ? '<span class="badge status-TRIAGED">YES</span>' : 'No'}</div>
+          ${r.recommended_containment ? `<div class="k">Recommended containment</div><div>${escapeHtml(r.recommended_containment)}</div>` : ''}
+        </div>
+        <ul>${arrayValue(r.recommendations).map(x=>`<li>${escapeHtml(x)}</li>`).join('') || '<li class="muted">No additional recommendations.</li>'}</ul>
+      </div>
+      <div class="warning" style="margin-top:12px;padding:10px;border-radius:6px">
+        Decision support only. This UI does not execute containment or any other automatic response action.
+      </div>
+    </section>`;
+}
+
+function renderIncidentLifecycle(i) {
+  return `
+    <section class="panel">
+      <h2>Incident Lifecycle</h2>
+      <div class="form-row">
+        <select id="incident-status-${escapeHtml(i.incident_id)}">
+          ${INCIDENT_STATUSES.map(s => `<option value="${s}" ${String(i.status).toUpperCase()===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <input id="incident-status-reason-${escapeHtml(i.incident_id)}" type="text" placeholder="Optional reason">
+        <button class="action primary" onclick="updateIncidentStatus('${escapeHtml(i.incident_id)}')">Update Status</button>
+      </div>
+      <div id="incident-status-message" aria-live="polite"></div>
+    </section>`;
+}
+
+function renderIncidentNotes(i) {
+  return `
+    <section class="panel">
+      <h2>Add Note</h2>
+      <textarea id="incident-note-${escapeHtml(i.incident_id)}" placeholder="Analyst note…"></textarea>
+      <div class="form-row" style="margin-top:8px">
+        <input id="incident-author-${escapeHtml(i.incident_id)}" type="text" value="analyst" placeholder="Author">
+        <button class="action primary" onclick="addIncidentNote('${escapeHtml(i.incident_id)}')">Add Note</button>
+      </div>
+      <div id="incident-note-message" aria-live="polite"></div>
+    </section>`;
+}
+
+function renderIncidentSummary(summary) {
+  return `
+    <section class="panel">
+      <h2>Incident Summary</h2>
+      <div class="kv">
+        ${Object.entries(summary || {}).map(([key,value]) =>
+          `<div class="k">${escapeHtml(key.replace(/_/g,' '))}</div><div>${renderSummaryValue(value)}</div>`
+        ).join('')}
+      </div>
+    </section>`;
+}
+
+function renderSummaryValue(value) {
+  if (Array.isArray(value)) return value.map(x=>`<span class="tag">${escapeHtml(typeof x === 'object' ? JSON.stringify(x) : x)}</span>`).join(' ') || '—';
+  if (value && typeof value === 'object') return `<code>${escapeHtml(JSON.stringify(value))}</code>`;
+  return escapeHtml(value ?? '—');
+}
+
+function setIncidentMessage(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
+async function updateIncidentStatus(id) {
+  const statusEl = document.getElementById('incident-status-' + id);
+  const reasonEl = document.getElementById('incident-status-reason-' + id);
+  if (!statusEl) return;
+
+  const status = statusEl.value;
+  const reason = reasonEl ? reasonEl.value.trim() : '';
+
+  setIncidentMessage('incident-status-message', '<p class="muted">Updating incident status…</p>');
+
+  try {
+    await incidentApi(`/incidents/${encodeURIComponent(id)}/status`, {
+      method: 'POST',
+      body: JSON.stringify({ status, reason, author: 'analyst' })
+    });
+
+    setIncidentMessage('incident-status-message', '<div class="success-box">Incident status updated successfully.</div>');
+    await refreshIncidents();
+    await selectIncident(id);
+  } catch (e) {
+    let label = 'Incident status update failed';
+    if (e.status === 400) label = 'Validation error / invalid status transition';
+    else if (e.status === 404) label = 'Incident not found';
+    else if (e.status === 409) label = 'Conflict — the incident state changed or the transition is not currently allowed';
+    setIncidentMessage('incident-status-message', `<div class="error-box"><b>${label}</b><br>${escapeHtml(e.message)}</div>`);
+  }
+}
+
+async function addIncidentNote(id) {
+  const noteEl = document.getElementById('incident-note-' + id);
+  const authorEl = document.getElementById('incident-author-' + id);
+  if (!noteEl || !noteEl.value.trim()) {
+    setIncidentMessage('incident-note-message', '<div class="error-box">Validation error: note cannot be empty.</div>');
+    return;
+  }
+
+  const note = noteEl.value.trim();
+  const author = authorEl && authorEl.value.trim() ? authorEl.value.trim() : 'analyst';
+
+  setIncidentMessage('incident-note-message', '<p class="muted">Adding note…</p>');
+
+  try {
+    await incidentApi(`/incidents/${encodeURIComponent(id)}/notes`, {
+      method: 'POST',
+      body: JSON.stringify({ note, author })
+    });
+
+    noteEl.value = '';
+    setIncidentMessage('incident-note-message', '<div class="success-box">Note added successfully.</div>');
+    await selectIncident(id);
+  } catch (e) {
+    let label = 'Could not add incident note';
+    if (e.status === 400) label = 'Validation error';
+    else if (e.status === 404) label = 'Incident not found';
+    else if (e.status === 409) label = 'Conflict while updating incident';
+    setIncidentMessage('incident-note-message', `<div class="error-box"><b>${label}</b><br>${escapeHtml(e.message)}</div>`);
+  }
+}
+
+async function openIncident(id) {
+  showView('incidents');
+  await refreshIncidents();
+  if (incidents.some(i => i.incident_id === id)) {
+    await selectIncident(id);
+  } else {
+    document.getElementById('incident-detail').innerHTML =
+      `<div class="error-box"><b>Incident not found</b><br>No incident with ID <code>${escapeHtml(id)}</code> was returned by the Incident API.</div>`;
+  }
+}
+
+async function openCampaign(campaignId) {
+  showView('analyst');
+  const exists = campaigns.some(c => c.campaign_id === campaignId);
+  if (!exists) await reload();
+  if (campaigns.some(c => c.campaign_id === campaignId)) {
+    await selectCampaign(campaignId);
+  } else {
+    document.getElementById('detail').innerHTML =
+      `<div class="error-box"><b>Campaign not found</b><br>No campaign with ID <code>${escapeHtml(campaignId)}</code> was returned by the Analyst API.</div>`;
+  }
+}
+
+/* Initialize both real-data views. */
+reload();
+refreshIncidents();
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+========================================================================
+         ATTACK CORRELATION ENGINE - CAMPAIGN & RECONSTRUCTION
+========================================================================
+
+How well does the engine group and interpret the attack activity?
+
+------------------------------------------------------------------------
+CAMPAIGN RECONSTRUCTION
+  Attack-event capture in largest campaign: 100.00%
+  Largest-campaign cleanliness:             41.18%
+  Campaigns containing attack events:       1
+  Majority attack campaigns:                1
+  Fragmented across majority campaigns:     False
+
+  Note: 'Purity' here follows the evaluator's implementation:
+  attack events in the largest campaign / all labelled attack
+  events. 'Cleanliness' is attack events / all events in the
+  largest campaign. These are project-specific definitions.
+
+ATTACK STAGE RECONSTRUCTION
+  Accuracy across all attack events: 53.57%
+  Prediction coverage:               71.43%
+  Accuracy among assigned events:    75.00%
+  Missing or ambiguous predictions: 16
+  Stage order correct:               None
+
+SEVERITY & BENIGN-NOISE HANDLING
+  Attack campaign severity score: 50.00%
+  Benign trap events in HIGH/CRITICAL campaigns: 38
+  Final severity score: 45.78%
+  Unique benign trap events identified: 225
+  Noise suppression rate: 24.26%
+
+OVERALL COMPOSITE RESULT
+  Composite score: 59.68%
+  This is a weighted score across the six evaluable components,
+  not a claim that the engine is this percentage accurate.
+
+EVALUATION LIMITATIONS
+  Active-state calibration: NOT EVALUABLE.
+  Ground Truth contains no active/inactive labels, so this
+  metric is excluded from the composite score.
+  Stage-order correctness is None when the required stage
+  timestamps are not all available for evaluation.
+  Results are limited to the labelled dataset and scenario.
+------------------------------------------------------------------------

@@ -1,0 +1,28 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Backups and logs
+backups/
+backup_v16_1/
+*.bak
+*.pre_incident_*
+
+# Runtime data
+analyst_view/
+logs/
+
+# Local environment
+.env
+.env.*
+
+# Machine-specific runtime snapshots
+documentation/system_state/runtime_state.txt
+
+# Generated operational output
+campaign_results.json
+
+# Duplicate evaluation report
+documentation/evaluation/evaluation_report.json
