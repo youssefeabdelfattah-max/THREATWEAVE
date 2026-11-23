@@ -187,6 +187,14 @@ Provides incident-management functionality:
 The incident-management layer supports analyst workflows and case tracking. It does not autonomously execute containment or remediation actions.
 
 ## Evaluation & Benchmarks
+### Independent Attack Analysis
+
+An independent analysis of the LokiBot-related Sysmon dataset used in THREATWEAVE's evaluation. It documents the observed attack activity, execution timeline, network indicators, benign background activity, potential false-positive scenarios, and investigation limitations.
+
+This analysis establishes the contextual understanding of the dataset and its ground truth, independently of the correlation engine's output.
+
+See the full [Independent Attack Analysis](evaluation/attack_analysis.md).
+
 ### Dataset Composition
 The correlation engine is currently evaluated against a structured benchmark dataset:
 - Total Endpoint Events: 472
