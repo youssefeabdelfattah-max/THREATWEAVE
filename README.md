@@ -257,4 +257,37 @@ The engine evaluation workflow is separate from offline scoring and may require 
 | Overall Relationship F1 | 72.28% |
 | Core Attack Pair F1 | 54.82% |
 | Campaign Purity | 100.00% |
-| Campaign
+| Campaign Cleanliness | 41.18% |
+| Composite Evaluation Score | 59.68% |
+
+### Interpretation & Evaluation Caveats
+
+- **Campaign Purity:** A score of 100% does not mean the campaign is free of benign events. It indicates that the evaluated attack events captured in the largest relevant campaign belong to the same ground-truth attack campaign.
+- **Campaign Cleanliness:** The score of 41.18% reflects campaign-level separation quality and the presence of benign events grouped alongside malicious activity.
+- **Composite Score:** The score of 59.68% is a weighted aggregate of evaluable components. It does not represent overall classification accuracy.
+- **Limited Generalization:** Current metrics are derived from one attack scenario across 472 events. They should not be extrapolated to claim generalization across diverse attack techniques, threat actors, or enterprise environments.
+
+---
+
+## Scope & Limitations
+
+- **Not a SIEM or EDR Replacement:** THREATWEAVE operates as a correlation and incident-management layer on top of existing telemetry infrastructure. It does not replace endpoint protection or centralized log-management solutions.
+- **No Autonomous Remediation:** The platform supports analyst-driven incident management and does not automatically isolate hosts, terminate processes, or execute containment actions.
+- **Deterministic Correlation:** The current implementation relies on rule-based and heuristic correlation logic rather than machine-learning-based anomaly detection.
+- **Telemetry Dependency:** Correlation quality depends on the completeness, consistency, and quality of the available endpoint telemetry.
+- **False Positives and Missed Relationships:** Generated attack stories and campaigns may contain benign events or fail to capture genuine attack relationships, as demonstrated by the evaluation results.
+- **Limited Validation Scope:** Current quantitative evaluation is based on a single attack scenario and does not establish generalization across different threat actors, attack techniques, or enterprise environments.
+- **Process Relationship Limitations:** Process relationships are inferred from available telemetry and correlation evidence. They should not be interpreted as guaranteed reconstruction of every process execution relationship.
+
+---
+
+## Roadmap & Future Improvements
+
+- **Dataset Expansion:** Incorporate additional attack scenarios, threat behaviors, and larger multi-source telemetry datasets to improve evaluation coverage.
+- **Correlation Optimization:** Refine correlation rules and heuristics to improve relationship precision and recall while reducing false-positive correlations.
+- **Campaign Separation:** Improve campaign clustering and reduce the inclusion of unrelated benign activity in attack campaigns.
+- **Telemetry Coverage:** Expand support for additional endpoint event types and telemetry sources to improve investigation context.
+- **Investigation Workflows:** Enhance analyst triage, campaign investigation, and incident-management capabilities.
+- **Automated Testing:** Introduce comprehensive integration and regression tests to improve reliability and maintainability.
+
+These items represent potential future development directions and are not claims of currently implemented functionality.
