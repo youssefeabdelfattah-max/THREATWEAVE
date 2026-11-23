@@ -117,25 +117,27 @@ THREATWEAVE/
 - Access to an Elasticsearch instance containing Windows endpoint telemetry for full telemetry collection and engine evaluation workflows.
 - The Incident API can run independently in demo mode using an in-memory incident store.
 ### Installation
-Clone the repository:
-git clone <YOUR_REPOSITORY_URL>
-cd attack-correlation-engine
 
+Clone the repository:
+
+```bash
+git clone https://github.com/youssefeabdelfattah-max/THREATWEAVE.git
+cd THREATWEAVE
+```
 
 Create and activate a virtual environment:
+
+```bash
 python3 -m venv venv
 source venv/bin/activate
-
+```
 
 Install dependencies:
+
+```bash
 pip install --upgrade pip
 pip install -r requirements.txt
-
-
-### Elasticsearch Configuration
-Configure the Elasticsearch connection using the environment variables expected by the application.
-
-The full correlation workflow requires a reachable Elasticsearch instance and appropriate credentials.
+```
 
 ### Running the Services
 1. Analyst API
