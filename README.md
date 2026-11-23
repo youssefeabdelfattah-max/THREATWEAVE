@@ -66,7 +66,7 @@ flowchart TD
 | Elasticsearch Integration | Elasticsearch Python Client |
 | Data Source | Windows Endpoint Telemetry |
 | Evaluation | JSON-based evaluation pipeline |
-
+```
 
 ## Project Structure
 
