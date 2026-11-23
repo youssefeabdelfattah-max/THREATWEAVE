@@ -1,6 +1,7 @@
 # THREATWEAVE
 
 **Attack Correlation & Incident Response Platform**
+
 *Weaving endpoint telemetry into actionable attack intelligence.*
 
 ---
@@ -44,15 +45,17 @@ flowchart TD
     G --> H["Analyst Interface"]
     H --> I["Incident Investigation & Management"]
 ```
-```
 
 ### Workflow Stages
-1. Telemetry Retrieval: Windows endpoint telemetry stored in Elasticsearch is queried through the Elastic REST Client (collector/elastic_client.py).
-2. Event Analysis and Correlation: Available events are analyzed and linked by the correlation engine into structured attack stories.
-3. Campaign Correlation: Related stories are grouped into broader campaign-level representations.
-4. Risk Assessment: Correlated activity receives risk and severity context alongside MITRE ATT&CK information.
-5. Analyst Investigation: Generated intelligence is exposed through the analyst view and Analyst API.
-6. Incident Management: Stories and analysis results can be ingested into the incident-management layer for investigation and lifecycle tracking.
+
+1. **Telemetry Retrieval:** Windows endpoint telemetry stored in Elasticsearch is queried through the Elastic REST Client (`collector/elastic_client.py`).
+2. **Event Analysis and Correlation:** Available events are analyzed and linked by the correlation engine into structured attack stories.
+3. **Campaign Correlation:** Related stories are grouped into broader campaign-level representations.
+4. **Risk Assessment:** Correlated activity receives risk and severity context alongside MITRE ATT&CK information.
+5. **Analyst Investigation:** Generated intelligence is exposed through the analyst view and Analyst API.
+6. **Incident Management:** Stories and analysis results can be ingested into the incident-management layer for investigation and lifecycle tracking.
+
+---
 
 ## Technology Stack
 
@@ -66,7 +69,8 @@ flowchart TD
 | Elasticsearch Integration | Elasticsearch Python Client |
 | Data Source | Windows Endpoint Telemetry |
 | Evaluation | JSON-based evaluation pipeline |
-```
+
+---
 
 ## Project Structure
 
@@ -92,14 +96,18 @@ THREATWEAVE/
 ├── incident_manager_v4.py
 ├── requirements.txt
 └── README.md
-
 ```
 
+---
+
 ## Getting Started
+
 ### Prerequisites
+
 - Python 3.x
 - Access to an Elasticsearch instance containing Windows endpoint telemetry for full telemetry collection and engine evaluation workflows.
 - The Incident API can run independently in demo mode using an in-memory incident store.
+
 ### Installation
 
 Clone the repository:
@@ -164,6 +172,8 @@ After starting each service, access its interactive Swagger UI documentation:
 
 **Note:** Run each API in a separate terminal. The Analyst API requires its generated data directory, while the Incident API can run independently in demo mode.
 
+---
+
 ## API Overview
 
 THREATWEAVE exposes two FastAPI services with separate responsibilities.
@@ -195,7 +205,10 @@ Provides incident-management functionality to support analyst workflows and case
 
 **Operational Scope:** The incident-management layer supports analyst-driven investigation and case tracking. It does not autonomously execute containment or remediation actions.
 
+---
+
 ## Evaluation & Benchmarks
+
 ### Independent Attack Analysis
 
 An independent analysis of the LokiBot-related Sysmon dataset used in THREATWEAVE's evaluation. It documents the observed attack activity, execution timeline, network indicators, benign background activity, potential false-positive scenarios, and investigation limitations.
@@ -205,24 +218,38 @@ This analysis establishes the contextual understanding of the dataset and its gr
 See the full [Independent Attack Analysis](evaluation/attack_analysis.md).
 
 ### Dataset Composition
-The correlation engine is currently evaluated against a structured benchmark dataset:
-- Total Endpoint Events: 472
-- Attack-Labelled Events: 56
-- Scenario Scope: 1 attack scenario
-Dataset files:
-- evaluation/evaluation_dataset.json
-- evaluation/ground_truth.json
-### Evaluation Execution
-Run the evaluation scoring script:
-python evaluation/evaluate_engine.py
 
+The correlation engine is currently evaluated against a structured benchmark dataset containing 472 curated endpoint events:
+
+- **Total Endpoint Events:** 472
+- **Attack-Labelled Events:** 56
+- **Benign Events:** 408
+- **Unknown Events:** 8
+- **Scenario Scope:** 1 attack scenario
+
+Dataset files:
+
+- `evaluation/evaluation_dataset.json`
+- `evaluation/ground_truth.json`
+
+### Evaluation Execution
+
+Run the evaluation scoring script:
+
+```bash
+python evaluation/evaluate_engine.py
+```
 
 Render the evaluation results:
-python evaluation/render_screenshot_reports.py
 
+```bash
+python evaluation/render_screenshot_reports.py
+```
 
 The engine evaluation workflow is separate from offline scoring and may require a configured Elasticsearch connection and the appropriate runtime environment.
+
 ### Benchmark Results
+
 | Metric | Result |
 |---|---:|
 | Relationship Precision | 78.83% |
@@ -230,32 +257,4 @@ The engine evaluation workflow is separate from offline scoring and may require 
 | Overall Relationship F1 | 72.28% |
 | Core Attack Pair F1 | 54.82% |
 | Campaign Purity | 100.00% |
-| Campaign Cleanliness | 41.18% |
-| Composite Evaluation Score | 59.68% |
-
-### Interpretation & Evaluation Caveats
-- Campaign Purity: A score of 100% does not mean the campaign is free of benign events. It indicates that the evaluated attack events captured in the largest relevant campaign belong to the same ground-truth attack campaign.
-- Campaign Cleanliness: The score of 41.18% reflects campaign-level separation quality and the presence of benign events grouped alongside malicious activity.
-- Composite Score: The score of 59.68% is a weighted aggregate of evaluable components. It does not represent overall classification accuracy.
-- Limited Generalization: Current metrics are derived from one attack scenario across 472 events. They should not be extrapolated to claim generalization across diverse attack techniques, threat actors, or enterprise environments.
-
-## Scope & Limitations
-
-- **Not a SIEM or EDR Replacement:** THREATWEAVE operates as a correlation and incident-management layer on top of existing telemetry infrastructure. It does not replace endpoint protection or centralized log-management solutions.
-- **No Autonomous Remediation:** The platform supports analyst-driven incident management and does not automatically isolate hosts, terminate processes, or execute containment actions.
-- **Deterministic Correlation:** The current implementation relies on rule-based and heuristic correlation logic rather than machine-learning-based anomaly detection.
-- **Telemetry Dependency:** Correlation quality depends on the completeness, consistency, and quality of the available endpoint telemetry.
-- **False Positives and Missed Relationships:** Generated attack stories and campaigns may contain benign events or fail to capture genuine attack relationships, as demonstrated by the evaluation results.
-- **Limited Validation Scope:** Current quantitative evaluation is based on a single attack scenario and does not establish generalization across different threat actors, attack techniques, or enterprise environments.
-- **Process Relationship Limitations:** Process relationships are inferred from available telemetry and correlation evidence. They should not be interpreted as guaranteed reconstruction of every process execution relationship.
-
-## Roadmap & Future Improvements
-
-- **Dataset Expansion:** Incorporate additional attack scenarios, threat behaviors, and larger multi-source telemetry datasets to improve evaluation coverage.
-- **Correlation Optimization:** Refine correlation rules and heuristics to improve relationship precision and recall while reducing false-positive correlations.
-- **Campaign Separation:** Improve campaign clustering and reduce the inclusion of unrelated benign activity in attack campaigns.
-- **Telemetry Coverage:** Expand support for additional endpoint event types and telemetry sources to improve investigation context.
-- **Investigation Workflows:** Enhance analyst triage, campaign investigation, and incident-management capabilities.
-- **Automated Testing:** Introduce comprehensive integration and regression tests to improve reliability and maintainability.
-
-These items represent potential future development directions and are not claims of currently implemented functionality.
+| Campaign
